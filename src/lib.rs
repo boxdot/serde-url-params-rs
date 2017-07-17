@@ -91,4 +91,20 @@ mod tests {
         assert!(url_params.is_ok());
         assert_eq!(url_params.unwrap(), "field=42&field=hello&field=3.14");
     }
+
+    #[test]
+    fn name() {
+        #[derive(Debug, Serialize)]
+        enum TupleVariant {
+            A(usize, usize),
+        }
+        #[derive(Debug, Serialize)]
+        struct Params {
+            field: TupleVariant,
+        }
+        let params = Params { field: TupleVariant::A(1, 2) };
+        let url_params = to_string(&params);
+        assert!(url_params.is_ok());
+        assert_eq!(url_params.unwrap(), "field=1&field=2");
+    }
 }

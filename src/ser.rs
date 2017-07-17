@@ -219,7 +219,7 @@ where
         _variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeTupleVariant> {
-        Err(Self::Error::unsupported("tuple variant"))
+        Ok(self)
     }
 
     #[inline]
@@ -312,11 +312,11 @@ where
     type Ok = ();
     type Error = Error;
 
-    fn serialize_field<T>(&mut self, _value: &T) -> Result<()>
+    fn serialize_field<T>(&mut self, value: &T) -> Result<()>
     where
         T: ?Sized + ::serde::ser::Serialize,
     {
-        Ok(())
+        value.serialize(&mut **self)
     }
 
     fn end(self) -> Result<()> {
