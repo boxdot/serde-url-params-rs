@@ -1,4 +1,4 @@
-# WIP: Serde URL Params
+# WIP: Serde URL Params [![Build Status](https://travis-ci.org/boxdot/serde-url-params-rs.svg?branch=master)](https://travis-ci.org/boxdot/serde-url-params-rs) [![Build status](https://ci.appveyor.com/api/projects/status/634yhym9f5cpb2qc/branch/master?svg=true)](https://ci.appveyor.com/project/boxdot/serde-url-params-rs/branch/master)
 
 Serialization of URL parameters from Rust structs.
 
