@@ -50,4 +50,45 @@ mod tests {
             "id=some_id&filter=filter1&filter=filter2&optional_filter=filter3&select=A&select2=A&select2=B&num=42&results=pass&results=fail"
         );
     }
+
+    #[test]
+    fn test_newtype_struct() {
+        #[derive(Debug, Serialize)]
+        struct NewType(usize);
+        #[derive(Debug, Serialize)]
+        struct Params {
+            field: NewType,
+        }
+        let params = Params { field: NewType(42) };
+        let url_params = to_string(&params);
+        assert!(url_params.is_ok());
+        assert_eq!(url_params.unwrap(), "field=42");
+    }
+
+
+    #[test]
+    fn test_tuple() {
+        #[derive(Debug, Serialize)]
+        struct Params {
+            field: (usize, &'static str, f32),
+        }
+        let params = Params { field: (42, "hello", 3.14) };
+        let url_params = to_string(&params);
+        assert!(url_params.is_ok());
+        assert_eq!(url_params.unwrap(), "field=42&field=hello&field=3.14");
+    }
+
+    #[test]
+    fn test_tuple_struct() {
+        #[derive(Debug, Serialize)]
+        struct TupleStruct(usize, &'static str, f32);
+        #[derive(Debug, Serialize)]
+        struct Params {
+            field: TupleStruct,
+        }
+        let params = Params { field: TupleStruct(42, "hello", 3.14) };
+        let url_params = to_string(&params);
+        assert!(url_params.is_ok());
+        assert_eq!(url_params.unwrap(), "field=42&field=hello&field=3.14");
+    }
 }

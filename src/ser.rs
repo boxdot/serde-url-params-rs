@@ -171,11 +171,11 @@ where
     }
 
     #[inline]
-    fn serialize_newtype_struct<T>(self, _name: &'static str, _value: &T) -> Result<()>
+    fn serialize_newtype_struct<T>(self, _name: &'static str, value: &T) -> Result<()>
     where
         T: ?Sized + ::serde::ser::Serialize,
     {
-        Err(Error::unsupported("newtype struct"))
+        value.serialize(self)
     }
 
     #[inline]
@@ -208,7 +208,7 @@ where
         _name: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeTupleStruct> {
-        Err(Error::unsupported("tuple struct"))
+        Ok(self)
     }
 
     #[inline]
@@ -274,11 +274,11 @@ where
     type Ok = ();
     type Error = Error;
 
-    fn serialize_element<T>(&mut self, _value: &T) -> Result<()>
+    fn serialize_element<T>(&mut self, value: &T) -> Result<()>
     where
         T: ?Sized + ::serde::ser::Serialize,
     {
-        Ok(())
+        value.serialize(&mut **self)
     }
 
     fn end(self) -> Result<()> {
@@ -293,11 +293,11 @@ where
     type Ok = ();
     type Error = Error;
 
-    fn serialize_field<T>(&mut self, _value: &T) -> Result<()>
+    fn serialize_field<T>(&mut self, value: &T) -> Result<()>
     where
         T: ?Sized + ::serde::ser::Serialize,
     {
-        Ok(())
+        value.serialize(&mut **self)
     }
 
     fn end(self) -> Result<()> {
