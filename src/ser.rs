@@ -141,6 +141,7 @@ where
         Ok(())
     }
 
+    #[inline]
     fn serialize_some<T>(self, value: &T) -> Result<()>
     where
         T: ?Sized + ::serde::ser::Serialize,
@@ -148,14 +149,17 @@ where
         value.serialize(self)
     }
 
+    #[inline]
     fn serialize_unit(self) -> Result<()> {
         Ok(())
     }
 
+    #[inline]
     fn serialize_unit_struct(self, _name: &'static str) -> Result<()> {
         Ok(())
     }
 
+    #[inline]
     fn serialize_unit_variant(
         self,
         _name: &'static str,
@@ -166,16 +170,15 @@ where
         variant.serialize(self)
     }
 
+    #[inline]
     fn serialize_newtype_struct<T>(self, _name: &'static str, _value: &T) -> Result<()>
     where
         T: ?Sized + ::serde::ser::Serialize,
     {
-        use serde::ser::Error;
-        Err(Error::custom(
-            "serialization of newtype struct is not supported",
-        ))
+        Err(Error::unsupported("newtype struct"))
     }
 
+    #[inline]
     fn serialize_newtype_variant<T>(
         self,
         _name: &'static str,
@@ -189,25 +192,26 @@ where
         value.serialize(self)
     }
 
+    #[inline]
     fn serialize_seq(self, _len: Option<usize>) -> Result<Self::SerializeSeq> {
         Ok(self)
     }
 
+    #[inline]
     fn serialize_tuple(self, len: usize) -> Result<Self::SerializeTuple> {
         self.serialize_seq(Some(len))
     }
 
+    #[inline]
     fn serialize_tuple_struct(
         self,
         _name: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeTupleStruct> {
-        use serde::ser::Error;
-        Err(Error::custom(
-            "serialization of tuple struct is not supported",
-        ))
+        Err(Error::unsupported("tuple struct"))
     }
 
+    #[inline]
     fn serialize_tuple_variant(
         self,
         _name: &'static str,
@@ -215,28 +219,24 @@ where
         _variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeTupleVariant> {
-        use serde::ser::Error;
-        Err(Self::Error::custom(
-            "serialization of tuple variant is not supported",
-        ))
+        Err(Self::Error::unsupported("tuple variant"))
     }
 
+    #[inline]
     fn serialize_map(self, _len: Option<usize>) -> Result<Self::SerializeMap> {
-        use serde::ser::Error;
-        Err(Self::Error::custom("serialization of map is not supported"))
+        Err(Self::Error::unsupported("map"))
     }
 
+    #[inline]
     fn serialize_struct(self, _name: &'static str, _len: usize) -> Result<Self::SerializeStruct> {
-        use serde::ser::Error;
         if self.current_key.is_some() {
-            Err(Self::Error::custom(
-                "serialization of nested struct is not supported",
-            ))
+            Err(Self::Error::unsupported("nested struct"))
         } else {
             Ok(self)
         }
     }
 
+    #[inline]
     fn serialize_struct_variant(
         self,
         _name: &'static str,
@@ -244,10 +244,7 @@ where
         _variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeStructVariant> {
-        use serde::ser::Error;
-        Err(Self::Error::custom(
-            "serialization of struct variant is not supported",
-        ))
+        Err(Self::Error::unsupported("struct variant"))
     }
 }
 

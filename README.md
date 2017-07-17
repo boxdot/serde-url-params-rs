@@ -28,17 +28,17 @@ let params = Params {
     filter: vec![Filter::New, Filter::Blocked],
 };
 assert_eq!(
-    to_string(&params).unwrap(),
+    serde_url_params::to_string(&params).unwrap(),
     "cursor=42&username=boxdot&filter=New&filter=Blocked"
 );
 ```
 
 ## WIP
 
-[ ] * Do not use Error::custom for unsupported serialization errors.
-[ ] * Escape url params in strings.
-[ ] * Expand tests.
-[ ] * Add docs.
+* [x] Do not use Error::custom for unsupported serialization errors.
+* [ ] Escape url params in strings.
+* [ ] Expand tests.
+* [ ] Add docs.
 
 ## License
 
