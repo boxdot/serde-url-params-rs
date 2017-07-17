@@ -9,7 +9,36 @@ serde_url_params = "0.1"
 
 ## Example
 
-`TODO`
+```rust
+#[derive(Debug, Serialize)]
+enum Filter { New, Registered, Blocked }
+
+#[derive(Debug, Serialize)]
+struct Params {
+    cursor: Option<usize>,
+    per_page: Option<usize>,
+    username: String,
+    filter: Vec<Filter>,
+}
+
+let params = Params {
+    cursor: Some(42),
+    per_page: None,
+    username: String::from("boxdot"),
+    filter: vec![Filter::New, Filter::Blocked],
+};
+assert_eq!(
+    to_string(&params).unwrap(),
+    "cursor=42&username=boxdot&filter=New&filter=Blocked"
+);
+```
+
+## WIP
+
+[ ] * Do not use Error::custom for unsupported serialization errors.
+[ ] * Escape url params in strings.
+[ ] * Expand tests.
+[ ] * Add docs.
 
 ## License
 
