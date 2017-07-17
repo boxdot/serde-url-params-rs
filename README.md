@@ -39,6 +39,7 @@ assert_eq!(
 * [ ] Escape url params in strings.
 * [ ] Expand tests.
 * [ ] Add docs.
+* [ ] Add support for maps with arbitrary keys.
 
 ## License
 

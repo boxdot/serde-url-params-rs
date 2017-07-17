@@ -93,18 +93,52 @@ mod tests {
     }
 
     #[test]
-    fn name() {
+    fn test_struct() {
         #[derive(Debug, Serialize)]
-        enum TupleVariant {
-            A(usize, usize),
+        struct A {
+            username: String,
         }
         #[derive(Debug, Serialize)]
         struct Params {
-            field: TupleVariant,
+            field: A,
         }
-        let params = Params { field: TupleVariant::A(1, 2) };
-        let url_params = to_string(&params);
-        assert!(url_params.is_ok());
-        assert_eq!(url_params.unwrap(), "field=1&field=2");
+        // top level struct is supported
+        {
+            let params = A { username: String::from("boxdot") };
+            let url_params = to_string(&params);
+            assert!(url_params.is_ok());
+            assert_eq!(url_params.unwrap(), "username=boxdot");
+        }
+        // nested struct is not supported
+        {
+            let params = Params { field: A { username: String::from("boxdot") } };
+            let url_params = to_string(&params);
+            assert!(url_params.is_err());
+        }
+    }
+
+    #[test]
+    fn test_struct_variant() {
+        #[derive(Debug, Serialize)]
+        enum StructVariant {
+            A { username: String },
+        }
+        #[derive(Debug, Serialize)]
+        struct Params {
+            field: StructVariant,
+        }
+        // top level struct variant is supported
+        {
+            let params = StructVariant::A { username: String::from("boxdot") };
+            let url_params = to_string(&params);
+            assert!(url_params.is_ok());
+            assert_eq!(url_params.unwrap(), "username=boxdot");
+        }
+        // nested struct variant is not supported
+        {
+            let params = Params { field: StructVariant::A { username: String::from("boxdot") } };
+            let url_params = to_string(&params);
+            assert!(url_params.is_err());
+        }
     }
 }

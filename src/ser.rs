@@ -244,7 +244,11 @@ where
         _variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeStructVariant> {
-        Err(Self::Error::unsupported("struct variant"))
+        if self.current_key.is_some() {
+            Err(Self::Error::unsupported("nexted struct variant"))
+        } else {
+            Ok(self)
+        }
     }
 }
 
@@ -384,14 +388,16 @@ where
     type Ok = ();
     type Error = Error;
 
-    fn serialize_field<T>(&mut self, _key: &'static str, _value: &T) -> Result<()>
+    fn serialize_field<T>(&mut self, key: &'static str, value: &T) -> Result<()>
     where
         T: ?Sized + ::serde::ser::Serialize,
     {
-        Ok(())
+        self.current_key = Some(String::from(key));
+        value.serialize(&mut **self)
     }
 
     fn end(self) -> Result<()> {
+        self.current_key = None;
         Ok(())
     }
 }
