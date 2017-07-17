@@ -8,16 +8,24 @@ use serde::ser;
 
 #[derive(Debug)]
 pub enum Error {
-    Inner(Box<error::Error>),
+    Extern(Box<error::Error>),
+    Unsupported(String),
     Custom(String),
 }
 
 pub type Result<T> = result::Result<T, Error>;
 
+impl Error {
+    pub fn unsupported<T: fmt::Display>(msg: T) -> Self {
+        Error::Unsupported(format!("{}", msg))
+    }
+}
+
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Error::Inner(ref err) => fmt::Display::fmt(err, f),
+            Error::Extern(ref err) => fmt::Display::fmt(err, f),
+            Error::Unsupported(ref msg) |
             Error::Custom(ref msg) => fmt::Display::fmt(msg, f),
         }
     }
@@ -26,14 +34,15 @@ impl fmt::Display for Error {
 impl error::Error for Error {
     fn description(&self) -> &str {
         match *self {
-            Error::Inner(ref err) => err.description(),
-            _ => "Param error",
+            Error::Extern(ref err) => err.description(),
+            Error::Unsupported(_) => "Unsupported error",
+            Error::Custom(_) => "Param error",
         }
     }
 
     fn cause(&self) -> Option<&error::Error> {
         match *self {
-            Error::Inner(ref err) => err.cause(),
+            Error::Extern(ref err) => err.cause(),
             _ => None,
         }
     }
@@ -47,12 +56,12 @@ impl ser::Error for Error {
 
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Self {
-        Error::Inner(Box::new(err))
+        Error::Extern(Box::new(err))
     }
 }
 
 impl From<string::FromUtf8Error> for Error {
     fn from(err: string::FromUtf8Error) -> Self {
-        Error::Inner(Box::new(err))
+        Error::Extern(Box::new(err))
     }
 }

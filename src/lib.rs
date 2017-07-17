@@ -50,5 +50,4 @@ mod tests {
             "id=some_id&filter=filter1&filter=filter2&optional_filter=filter3&select=A&select2=A&select2=B&num=42&results=pass&results=fail"
         );
     }
-
 }
