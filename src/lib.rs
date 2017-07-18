@@ -2,6 +2,7 @@ extern crate serde;
 #[cfg(test)]
 #[macro_use]
 extern crate serde_derive;
+extern crate url;
 
 pub use self::error::{Error, Result};
 pub use self::ser::{Serializer, to_string, to_vec, to_writer};
@@ -140,5 +141,17 @@ mod tests {
             let url_params = to_string(&params);
             assert!(url_params.is_err());
         }
+    }
+
+    #[test]
+    fn test_urlencoded() {
+        #[derive(Debug, Serialize)]
+        struct Params {
+            field: String,
+        }
+        let params = Params { field: String::from("{some=weird&param}") };
+        let url_params = to_string(&params);
+        assert!(url_params.is_ok());
+        assert_eq!(url_params.unwrap(), "field=%7Bsome%3Dweird%26param%7D");
     }
 }

@@ -4,6 +4,8 @@ use std::io;
 use std::fmt;
 use error::{Error, Result};
 
+use url;
+
 pub struct Serializer<W> {
     writer: W,
     current_key: Option<String>,
@@ -122,8 +124,9 @@ where
 
     #[inline]
     fn serialize_str(self, value: &str) -> Result<()> {
-        // TODO: escape url
-        self.write_key_value(value)
+        use std::iter::FromIterator;
+        let encoded = String::from_iter(url::form_urlencoded::byte_serialize(value.as_bytes()));
+        self.write_key_value(&encoded)
     }
 
     #[inline]
