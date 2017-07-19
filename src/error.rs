@@ -12,8 +12,11 @@ use serde::ser;
 /// Represents all possible errors that can occur when serializing into URL
 /// parameters.
 pub enum Error {
+    /// External error caused by e.g. utf8 string conversion or io.
     Extern(Box<error::Error>),
+    /// Error when tried to serialize an unsupported type.
     Unsupported(String),
+    /// Custom error caused by any error while serializing a type.
     Custom(String),
 }
 

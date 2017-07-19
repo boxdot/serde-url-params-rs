@@ -79,7 +79,7 @@
 //! [to_vec]: ser/fn.to_vec.html
 //! [to_writer]: ser/fn.to_writer.html
 
-// #![deny(missing_docs)]
+#![deny(missing_docs)]
 
 extern crate serde;
 #[cfg(test)]
