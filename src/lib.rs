@@ -1,10 +1,95 @@
+//! # Serde URL Params
+//!
+//! This module provides a simple and flexible way for serializing data
+//! structures into URL parameters strings.
+//!
+//! A data structure can be converted to such string by
+//! [`serde_url_params::to_string`][to_string] function. There is also
+//! [`serde_url_params::to_vec`][to_vec] which serializes to a `Vec<u8>` and
+//! [`serde_url_params::to_writer`][to_writer] which serializes to any
+//! `io::Write` such as a File or a TCP stream.
+//!
+//! ```rust
+//! extern crate serde;
+//! extern crate serde_url_params;
+//!
+//! #[macro_use]
+//! extern crate serde_derive;
+//!
+//! use serde_url_params::Error;
+//!
+//! #[derive(Serialize)]
+//! enum Filter {
+//!     Horror,
+//!     Comedy,
+//!     Thriller,
+//!     Drama,
+//! }
+//!
+//! #[derive(Serialize)]
+//! struct SearchRequest {
+//!     film: String,
+//!     per_page: Option<usize>,
+//!     next: Option<usize>,
+//!     filter: Vec<Filter>,
+//! }
+//!
+//! fn print_url_params() -> Result<(), Error> {
+//!     // Some data structure.
+//!     let request = SearchRequest {
+//!         film: String::from("Fight Club"),
+//!         per_page: Some(20),
+//!         next: None,
+//!         filter: vec![Filter::Thriller, Filter::Drama],
+//!     };
+//!
+//!     // Serialize it to a URL parameters string.
+//!     let p = serde_url_params::to_string(&request)?;
+//!
+//!     // Prints: `film=Fight+Club&per_page=20&filter=Thriller&filter=Drama`
+//!     println!("{}", p);
+//!
+//!     Ok(())
+//! }
+//!
+//! fn main() {
+//!     print_url_params().unwrap();
+//! }
+//! ```
+//!
+//! Almost any type that implements Serde's `Serialize` trait can be serialized
+//! this way. This includes the built-in Rust standard library types `Vec<T>`
+//! as you can see in the above example, as well as structs or enums annotated
+//! with `#[derive(Serialize)]`. However, there are exceptions, for which it is
+//! not obvious how to serialize them into flat parameters list:
+//!
+//! * any simple top level value, since it does not have a parameter key, and
+//! * any nested struct, since it is not obvious how to flatten it,
+//! * any map, since they a map can have an arbitrary type for keys, which is
+//!   not into string convertible. _Note_: This limitation can be circumvented
+//!   by implementing serialization only for maps with string-convertible keys.
+//!
+//! Further, any string is automatically URL encoded (or more precisely,
+//! percentage encoded). Elements in `Vec`s are serialized as repeated
+//! `key=value` pairs, where key is the field holding the vector. Newtype
+//! variants and variant structs are flattened by omitting the name of the
+//! variant resp. struct.
+//!
+//! [to_string]: ser/fn.to_string.html
+//! [to_vec]: ser/fn.to_vec.html
+//! [to_writer]: ser/fn.to_writer.html
+
+#![deny(missing_docs)]
+
 extern crate serde;
 #[cfg(test)]
 #[macro_use]
 extern crate serde_derive;
 extern crate url;
 
+#[doc(inline)]
 pub use self::error::{Error, Result};
+#[doc(inline)]
 pub use self::ser::{Serializer, to_string, to_vec, to_writer};
 
 pub mod error;

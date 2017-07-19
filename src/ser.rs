@@ -1,4 +1,4 @@
-// #![deny(missing_docs)]
+//! Serialize a Rust data structure into URL parameters string.
 
 use std::io;
 use std::fmt;
@@ -6,6 +6,7 @@ use error::{Error, Result};
 
 use url;
 
+/// A structure for serializing Rust values into URL parameters string.
 pub struct Serializer<W> {
     writer: W,
     current_key: Option<String>,
@@ -342,12 +343,12 @@ where
     where
         T: ?Sized + ::serde::ser::Serialize,
     {
-        // TODO: For now, we are not supporting maps, since we need to make sure that T is String
-        // convertable. For that, we need another Serializer that can serialize only String and
-        // fails for every other type.
+        // TODO: For now, we are not supporting maps, since we need to make sure that T
+        // is String convertable. For that, we need another Serializer that can
+        // serialize only String and fails for every other type.
         //
         // For that we could use trait inheritance:
-        //   EmptySerializer < StringSerializer < this serializer
+        //   `EmptySerializer` < `StringSerializer` < this serializer
         Ok(())
     }
 
@@ -405,6 +406,16 @@ where
     }
 }
 
+/// Serialize the given data structure as URL parameters into the IO stream.
+///
+/// # Errors
+///
+/// Serialization fails if:
+///
+/// * `T`'s implementation of `Serialize` decides to fail,
+/// * `T` is a type without keys, i.e. not a struct.
+/// * `T` contains a nested struct,
+/// * `T` contains a map.
 #[inline]
 pub fn to_writer<W, T: ?Sized>(writer: W, value: &T) -> Result<()>
 where
@@ -416,6 +427,17 @@ where
     Ok(())
 }
 
+/// Serialize the given data structure as a byte vector containing URL
+/// parameters.
+///
+/// # Errors
+///
+/// Serialization fails if:
+///
+/// * `T`'s implementation of `Serialize` decides to fail,
+/// * `T` is a type without keys, i.e. not a struct.
+/// * `T` contains a nested struct,
+/// * `T` contains a map.
 #[inline]
 pub fn to_vec<T: ?Sized>(value: &T) -> Result<Vec<u8>>
 where
@@ -426,6 +448,16 @@ where
     Ok(writer)
 }
 
+/// Serialize the given data structure as a String of URL parameters.
+///
+/// # Errors
+///
+/// Serialization fails if:
+///
+/// * `T`'s implementation of `Serialize` decides to fail,
+/// * `T` is a type without keys, i.e. not a struct.
+/// * `T` contains a nested struct,
+/// * `T` contains a map.
 #[inline]
 pub fn to_string<T: ?Sized>(value: &T) -> Result<String>
 where
