@@ -342,12 +342,12 @@ where
     where
         T: ?Sized + ::serde::ser::Serialize,
     {
-        // TODO: For now, we are not supporting maps, since we need to make sure that T is String
-        // convertable. For that, we need another Serializer that can serialize only String and
-        // fails for every other type.
+        // TODO: For now, we are not supporting maps, since we need to make sure that T
+        // is String convertable. For that, we need another Serializer that can
+        // serialize only String and fails for every other type.
         //
         // For that we could use trait inheritance:
-        //   EmptySerializer < StringSerializer < this serializer
+        //   `EmptySerializer` < `StringSerializer` < this serializer
         Ok(())
     }
 
