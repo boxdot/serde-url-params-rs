@@ -36,7 +36,7 @@ assert_eq!(
 ## WIP
 
 * [x] Do not use Error::custom for unsupported serialization errors.
-* [ ] Escape url params in strings.
+* [x] Escape url params in strings.
 * [ ] Expand tests.
 * [ ] Add docs.
 * [ ] Add support for maps with arbitrary keys.
