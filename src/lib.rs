@@ -87,7 +87,9 @@ extern crate serde;
 extern crate serde_derive;
 extern crate url;
 
+#[doc(inline)]
 pub use self::error::{Error, Result};
+#[doc(inline)]
 pub use self::ser::{Serializer, to_string, to_vec, to_writer};
 
 pub mod error;
