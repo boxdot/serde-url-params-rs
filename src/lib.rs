@@ -18,6 +18,7 @@
 //!
 //! use serde_url_params::Error;
 //!
+//! # #[allow(dead_code)]
 //! #[derive(Serialize)]
 //! enum Filter {
 //!     Horror,
@@ -51,10 +52,10 @@
 //!
 //!     Ok(())
 //! }
-//!
-//! fn main() {
-//!     print_url_params().unwrap();
-//! }
+//! #
+//! # fn main() {
+//! #    print_url_params().unwrap();
+//! # }
 //! ```
 //!
 //! Almost any type that implements Serde's `Serialize` trait can be serialized
