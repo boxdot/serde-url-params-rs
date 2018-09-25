@@ -33,14 +33,6 @@ assert_eq!(
 );
 ```
 
-## WIP
-
-* [x] Do not use Error::custom for unsupported serialization errors.
-* [x] Escape url params in strings.
-* [ ] Expand tests.
-* [x] Add docs.
-* [ ] Add support for maps with arbitrary keys.
-
 ## License
 
  * Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or
