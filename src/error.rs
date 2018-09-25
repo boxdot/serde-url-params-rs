@@ -2,8 +2,8 @@
 
 use std::error;
 use std::fmt;
-use std::result;
 use std::io;
+use std::result;
 use std::string;
 
 use serde::ser;
@@ -35,8 +35,7 @@ impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             Error::Extern(ref err) => fmt::Display::fmt(err, f),
-            Error::Unsupported(ref msg) |
-            Error::Custom(ref msg) => fmt::Display::fmt(msg, f),
+            Error::Unsupported(ref msg) | Error::Custom(ref msg) => fmt::Display::fmt(msg, f),
         }
     }
 }

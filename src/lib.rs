@@ -27,11 +27,19 @@
 //! }
 //!
 //! #[derive(Serialize)]
+//! struct Options {
+//!     year: u16,
+//!     actors: Vec<String>,
+//! }
+//!
+//! #[derive(Serialize)]
 //! struct SearchRequest {
 //!     film: String,
 //!     per_page: Option<usize>,
 //!     next: Option<usize>,
 //!     filter: Vec<Filter>,
+//!     #[serde(flatten)]
+//!     options: Options,
 //! }
 //!
 //! fn print_url_params() -> Result<(), Error> {
@@ -41,13 +49,19 @@
 //!         per_page: Some(20),
 //!         next: None,
 //!         filter: vec![Filter::Thriller, Filter::Drama],
+//!         options: Options {
+//!             year: 1999,
+//!             actors: vec!["Edward Norton".into()],
+//!         },
 //!     };
 //!
 //!     // Serialize it to a URL parameters string.
 //!     let p = serde_url_params::to_string(&request)?;
 //!
-//!     // Prints: `film=Fight+Club&per_page=20&filter=Thriller&filter=Drama`
-//!     println!("{}", p);
+//!     assert_eq!(
+//!         p,
+//!         "film=Fight+Club&per_page=20&filter=Thriller&filter=Drama&year=1999&actors=Edward+Norton"
+//!     );
 //!
 //!     Ok(())
 //! }
@@ -65,9 +79,7 @@
 //!
 //! * any simple top level value, since it does not have a parameter key, and
 //! * any nested struct, since it is not obvious how to flatten it,
-//! * any map, since they a map can have an arbitrary type for keys, which is
-//!   not into string convertible. _Note_: This limitation can be circumvented
-//!   by implementing serialization only for maps with string-convertible keys.
+//! * any map, which is not flattened (i.e. annotated with `#[serde(flatten)]`).
 //!
 //! Further, any string is automatically URL encoded (or more precisely,
 //! percentage encoded). Elements in `Vec`s are serialized as repeated
@@ -90,7 +102,7 @@ extern crate url;
 #[doc(inline)]
 pub use self::error::{Error, Result};
 #[doc(inline)]
-pub use self::ser::{Serializer, to_string, to_vec, to_writer};
+pub use self::ser::{to_string, to_vec, to_writer, Serializer};
 
 pub mod error;
 pub mod ser;
@@ -151,14 +163,15 @@ mod tests {
         assert_eq!(url_params.unwrap(), "field=42");
     }
 
-
     #[test]
     fn test_tuple() {
         #[derive(Debug, Serialize)]
         struct Params {
             field: (usize, &'static str, f32),
         }
-        let params = Params { field: (42, "hello", 3.14) };
+        let params = Params {
+            field: (42, "hello", 3.14),
+        };
         let url_params = to_string(&params);
         assert!(url_params.is_ok());
         assert_eq!(url_params.unwrap(), "field=42&field=hello&field=3.14");
@@ -172,7 +185,9 @@ mod tests {
         struct Params {
             field: TupleStruct,
         }
-        let params = Params { field: TupleStruct(42, "hello", 3.14) };
+        let params = Params {
+            field: TupleStruct(42, "hello", 3.14),
+        };
         let url_params = to_string(&params);
         assert!(url_params.is_ok());
         assert_eq!(url_params.unwrap(), "field=42&field=hello&field=3.14");
@@ -190,14 +205,20 @@ mod tests {
         }
         // top level struct is supported
         {
-            let params = A { username: String::from("boxdot") };
+            let params = A {
+                username: String::from("boxdot"),
+            };
             let url_params = to_string(&params);
             assert!(url_params.is_ok());
             assert_eq!(url_params.unwrap(), "username=boxdot");
         }
         // nested struct is not supported
         {
-            let params = Params { field: A { username: String::from("boxdot") } };
+            let params = Params {
+                field: A {
+                    username: String::from("boxdot"),
+                },
+            };
             let url_params = to_string(&params);
             assert!(url_params.is_err());
         }
@@ -215,14 +236,20 @@ mod tests {
         }
         // top level struct variant is supported
         {
-            let params = StructVariant::A { username: String::from("boxdot") };
+            let params = StructVariant::A {
+                username: String::from("boxdot"),
+            };
             let url_params = to_string(&params);
             assert!(url_params.is_ok());
             assert_eq!(url_params.unwrap(), "username=boxdot");
         }
         // nested struct variant is not supported
         {
-            let params = Params { field: StructVariant::A { username: String::from("boxdot") } };
+            let params = Params {
+                field: StructVariant::A {
+                    username: String::from("boxdot"),
+                },
+            };
             let url_params = to_string(&params);
             assert!(url_params.is_err());
         }
@@ -234,9 +261,41 @@ mod tests {
         struct Params {
             field: String,
         }
-        let params = Params { field: String::from("{some=weird&param}") };
+        let params = Params {
+            field: String::from("{some=weird&param}"),
+        };
         let url_params = to_string(&params);
         assert!(url_params.is_ok());
         assert_eq!(url_params.unwrap(), "field=%7Bsome%3Dweird%26param%7D");
+    }
+
+    #[test]
+    fn test_flattened_struct() {
+        // this struct just exists for structuring the data
+        #[derive(Serialize, Debug)]
+        pub struct Complex {
+            real: f64,
+            imag: f64,
+        }
+
+        #[derive(Serialize, Debug)]
+        pub struct Params {
+            x: u64,
+            #[serde(flatten)]
+            z: Option<Complex>,
+        }
+
+        let params = Params {
+            x: 1,
+            z: Some(Complex {
+                real: 0.0,
+                imag: 1.0,
+            }),
+        };
+        let url_params = to_string(&params);
+        assert_eq!(
+            url_params.expect("failed serialization"),
+            "x=1&real=0&imag=1"
+        );
     }
 }
