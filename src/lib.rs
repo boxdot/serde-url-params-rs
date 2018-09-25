@@ -298,4 +298,37 @@ mod tests {
             "x=1&real=0&imag=1"
         );
     }
+
+    #[test]
+    fn test_seq_of_flattened_struct() {
+        #[derive(Serialize, Debug)]
+        pub struct Complex {
+            real: f64,
+            imag: f64,
+        }
+
+        #[derive(Serialize, Debug)]
+        #[serde(transparent)]
+        pub struct Params {
+            seq: Vec<Complex>,
+        }
+
+        let params = Params {
+            seq: vec![
+                Complex {
+                    real: 0.0,
+                    imag: 1.0,
+                },
+                Complex {
+                    real: 1.0,
+                    imag: 0.0,
+                },
+            ],
+        };
+        let url_params = to_string(&params);
+        assert_eq!(
+            url_params.expect("failed serialization"),
+            "real=0&imag=1&real=1&imag=0"
+        );
+    }
 }
