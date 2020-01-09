@@ -13,7 +13,7 @@ use serde::ser;
 /// parameters.
 pub enum Error {
     /// External error caused by e.g. utf8 string conversion or io.
-    Extern(Box<error::Error>),
+    Extern(Box<dyn error::Error>),
     /// Error when tried to serialize an unsupported type.
     Unsupported(String),
     /// Custom error caused by any error while serializing a type.
@@ -40,22 +40,7 @@ impl fmt::Display for Error {
     }
 }
 
-impl error::Error for Error {
-    fn description(&self) -> &str {
-        match *self {
-            Error::Extern(ref err) => err.description(),
-            Error::Unsupported(_) => "Unsupported error",
-            Error::Custom(_) => "Param error",
-        }
-    }
-
-    fn cause(&self) -> Option<&error::Error> {
-        match *self {
-            Error::Extern(ref err) => err.cause(),
-            _ => None,
-        }
-    }
-}
+impl std::error::Error for Error {}
 
 impl ser::Error for Error {
     fn custom<T: fmt::Display>(msg: T) -> Error {

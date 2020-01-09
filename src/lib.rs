@@ -91,13 +91,7 @@
 //! [to_vec]: ser/fn.to_vec.html
 //! [to_writer]: ser/fn.to_writer.html
 
-#![deny(missing_docs)]
-
-extern crate serde;
-#[cfg(test)]
-#[macro_use]
-extern crate serde_derive;
-extern crate url;
+#![deny(missing_docs, warnings)]
 
 #[doc(inline)]
 pub use self::error::{Error, Result};
@@ -110,6 +104,7 @@ pub mod ser;
 #[cfg(test)]
 mod tests {
     use super::to_string;
+    use serde_derive::Serialize;
 
     #[derive(Debug, Serialize)]
     enum Selection {

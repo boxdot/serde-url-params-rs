@@ -9,6 +9,7 @@ keywords = ["serde", "serialization", "url"]
 categories = ["encoding"]
 readme = "README.md"
 include = ["Cargo.toml", "src/**/*.rs", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
+edition = "2018"
 
 [dependencies]
 serde = "1.0"
