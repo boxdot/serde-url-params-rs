@@ -4,7 +4,7 @@ Serialization of URL parameters from Rust structs.
 
 ```toml
 [dependencies]
-serde_url_params = "0.1"
+serde_url_params = "0.2"
 ```
 
 ## Example
