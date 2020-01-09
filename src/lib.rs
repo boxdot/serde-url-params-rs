@@ -10,13 +10,7 @@
 //! `io::Write` such as a File or a TCP stream.
 //!
 //! ```rust
-//! extern crate serde;
-//! extern crate serde_url_params;
-//!
-//! #[macro_use]
-//! extern crate serde_derive;
-//!
-//! use serde_url_params::Error;
+//! use serde::Serialize;
 //!
 //! #[derive(Serialize)]
 //! enum Filter {
@@ -42,7 +36,7 @@
 //!     options: Options,
 //! }
 //!
-//! fn print_url_params() -> Result<(), Error> {
+//! fn main() -> Result<(), serde_url_params::Error> {
 //!     // Some data structure.
 //!     let request = SearchRequest {
 //!         film: String::from("Fight Club"),
@@ -56,18 +50,12 @@
 //!     };
 //!
 //!     // Serialize it to a URL parameters string.
-//!     let p = serde_url_params::to_string(&request)?;
-//!
+//!     let p = serde_url_params::to_string(&request).unwrap();
 //!     assert_eq!(
 //!         p,
 //!         "film=Fight+Club&per_page=20&filter=Thriller&filter=Drama&year=1999&actors=Edward+Norton"
 //!     );
-//!
 //!     Ok(())
-//! }
-//!
-//! fn main() {
-//!     print_url_params().unwrap();
 //! }
 //! ```
 //!
@@ -91,13 +79,7 @@
 //! [to_vec]: ser/fn.to_vec.html
 //! [to_writer]: ser/fn.to_writer.html
 
-#![deny(missing_docs)]
-
-extern crate serde;
-#[cfg(test)]
-#[macro_use]
-extern crate serde_derive;
-extern crate url;
+#![deny(warnings, missing_docs)]
 
 #[doc(inline)]
 pub use self::error::{Error, Result};
@@ -110,6 +92,7 @@ pub mod ser;
 #[cfg(test)]
 mod tests {
     use super::to_string;
+    use serde::Serialize;
 
     #[derive(Debug, Serialize)]
     enum Selection {

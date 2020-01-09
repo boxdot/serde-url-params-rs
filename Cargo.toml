@@ -1,6 +1,6 @@
 [package]
 name = "serde_url_params"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["boxdot <d@zerovolt.org>"]
 license = "MIT/Apache-2.0"
 description = "URL parameters serialization"
@@ -9,10 +9,11 @@ keywords = ["serde", "serialization", "url"]
 categories = ["encoding"]
 readme = "README.md"
 include = ["Cargo.toml", "src/**/*.rs", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
+edition = "2018"
 
 [dependencies]
-serde = "1.0"
-url = "1.0"
+serde = "1.0.104"
+url = "2.1.1"
 
 [dev-dependencies]
-serde_derive = "1.0"
+serde = { version = "1.0.104", features = ["derive"] }

@@ -1,6 +1,6 @@
 //! Serialize a Rust data structure into URL parameters string.
 
-use error::{Error, Result};
+use crate::error::{Error, Result};
 use std::fmt;
 use std::io;
 
