@@ -1,4 +1,4 @@
-# Serde URL Params ![rust build status](https://github.com/boxdot/serde_url_params-rs/workflows/rust/badge.svg)
+# Serde URL Params ![rust build status](https://github.com/boxdot/serde-url-params-rs/workflows/rust/badge.svg)
 
 Serialization of URL parameters from Rust structs.
 
