@@ -1,4 +1,18 @@
-# Serde URL Params ![rust build status](https://github.com/boxdot/serde-url-params-rs/workflows/rust/badge.svg)
+# Serde URL Params
+
+[![crates-badge]][crates-url]
+[![docs-badge]][docs-url]
+[![license-badge]][license]
+[![ci-badge]][ci-url]
+
+[crates-badge]: https://img.shields.io/crates/v/serde-url-params.svg
+[crates-url]: https://crates.io/crates/serde-url-params
+[docs-badge]: https://docs.rs/serde_url_params/badge.svg
+[docs-url]: https://docs.rs/serde_url_params
+[license-badge]: https://img.shields.io/crates/l/serde-url-params.svg
+[license]: #license
+[ci-badge]: https://github.com/boxdot/serde-url-params-rs/workflows/rust/badge.svg
+[ci-url]: https://github.com/boxdot/serde-url-params-rs/actions
 
 Serialization of URL parameters from Rust structs.
 
