@@ -1,19 +1,14 @@
 //! When serializing to URL parameters fails.
 
-use std::error;
-use std::fmt;
-use std::io;
-use std::result;
-use std::string;
-
 use serde::ser;
+use std::fmt;
 
 #[derive(Debug)]
 /// Represents all possible errors that can occur when serializing into URL
 /// parameters.
 pub enum Error {
     /// External error caused by e.g. utf8 string conversion or io.
-    Extern(Box<dyn error::Error>),
+    Extern(Box<dyn std::error::Error + Send + Sync>),
     /// Error when tried to serialize an unsupported type.
     Unsupported(String),
     /// Custom error caused by any error while serializing a type.
@@ -21,7 +16,7 @@ pub enum Error {
 }
 
 /// Alias for `Result` with error type `serde_url_params::Error`.
-pub type Result<T> = result::Result<T, Error>;
+pub type Result<T> = std::result::Result<T, Error>;
 
 impl Error {
     /// Creates a new error when a type is not supported for serializing into
@@ -44,18 +39,18 @@ impl std::error::Error for Error {}
 
 impl ser::Error for Error {
     fn custom<T: fmt::Display>(msg: T) -> Error {
-        Error::Custom(format!("{}", msg))
+        Error::Custom(msg.to_string())
     }
 }
 
-impl From<io::Error> for Error {
-    fn from(err: io::Error) -> Self {
+impl From<std::io::Error> for Error {
+    fn from(err: std::io::Error) -> Self {
         Error::Extern(Box::new(err))
     }
 }
 
-impl From<string::FromUtf8Error> for Error {
-    fn from(err: string::FromUtf8Error) -> Self {
+impl From<std::string::FromUtf8Error> for Error {
+    fn from(err: std::string::FromUtf8Error) -> Self {
         Error::Extern(Box::new(err))
     }
 }
