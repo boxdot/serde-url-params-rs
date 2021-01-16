@@ -4,8 +4,6 @@ use crate::error::{Error, Result};
 use std::fmt;
 use std::io;
 
-use url;
-
 /// A structure for serializing Rust values into URL parameters string.
 pub struct Serializer<W> {
     writer: W,
