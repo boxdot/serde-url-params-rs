@@ -1,6 +1,6 @@
 [package]
 name = "serde_url_params"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["boxdot <d@zerovolt.org>"]
 license = "MIT/Apache-2.0"
 description = "URL parameters serialization"
@@ -16,4 +16,5 @@ serde = "1.0.104"
 url = "2.1.1"
 
 [dev-dependencies]
+itertools = "0.10.5"
 serde = { version = "1.0.104", features = ["derive"] }
