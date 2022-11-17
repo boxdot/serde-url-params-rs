@@ -410,9 +410,9 @@ struct StringOnlySerializer {
     value: String,
 }
 
-impl Into<String> for StringOnlySerializer {
-    fn into(self) -> String {
-        self.value
+impl From<StringOnlySerializer> for String {
+    fn from(s: StringOnlySerializer) -> Self {
+        s.value
     }
 }
 

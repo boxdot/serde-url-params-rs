@@ -79,7 +79,7 @@
 //! [to_vec]: ser/fn.to_vec.html
 //! [to_writer]: ser/fn.to_writer.html
 
-#![deny(warnings, missing_docs)]
+#![deny(missing_docs)]
 
 #[doc(inline)]
 pub use self::error::{Error, Result};
@@ -147,6 +147,7 @@ mod tests {
     }
 
     #[test]
+    #[allow(clippy::approx_constant)]
     fn test_tuple() {
         #[derive(Debug, Serialize)]
         struct Params {
@@ -161,6 +162,7 @@ mod tests {
     }
 
     #[test]
+    #[allow(clippy::approx_constant)]
     fn test_tuple_struct() {
         #[derive(Debug, Serialize)]
         struct TupleStruct(usize, &'static str, f32);
